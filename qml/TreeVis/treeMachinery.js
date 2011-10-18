@@ -30,6 +30,18 @@ function stepCon(name, value) {
     return {"name" : name, "value" : value};
 }
 
+function getValueString(treeLeaf, pval, pleft, pright) {
+    var str = "";
+    if(pval == "undefined" && pleft == "undefined" && pright == "indefined") {
+        str += p + ";" + pval + ";" + pleft + ";" + pright;
+    } else if(treeLeaf == null) {
+        str += "nil;?;?;?"
+    } else {
+        str += "[TreeLeaf];" + treeLeaf.key + ";" + ((treeLeaf.left == null) ? "nil;" : "[TreeLeaf];") +  ((treeLeaf.right == null) ? "nil" : "[TreeLeaf]");
+    }
+    return str;
+}
+
 function initTree() {
     treeRoot = null;
 }
@@ -37,63 +49,139 @@ function initTree() {
 function insTree(key) {
     var seq = [];
 
-    var f = function (tree, up) {
+    if(treeRoot == null) {
         seq.push([
-                     stepCon("codeline", "ins_useless"),
+                     stepCon("codeline", "ins_whileTrue")
                  ]);
         seq.push([
                      stepCon("codeline", "ins_ifTreeNull"),
                  ]);
-        if (tree == null) {
-            tree = newLeaf(up, key, null, null, null);
+        treeRoot = newLeaf(null, key, null, null, null);
+        seq.push([
+                     stepCon("codeline", "ins_newElem"),
+                     stepCon("shownode", treeRoot.id),
+                     stepCon("sethigh", treeRoot.id),
+                     stepCon("movetohome", treeRoot.id),
+                     stepCon("variablevalue", getValueString(treeRoot))
+                 ]);
+        seq.push([
+                     stepCon("codeline", "ins_newElemSetLeftNull"),
+                     stepCon("codeline", "ins_newElemSetRightNull"),
+                     stepCon("codeline", "ins_newElemSetVal")
+                 ]);
+        seq.push([
+                     stepCon("codeline", "ins_complite")
+                 ]);
+    } else {
+        var tempLeaf = treeRoot;
+        while(true) {
             seq.push([
-                         stepCon("codeline", "ins_newElem"),
-                         stepCon("shownode", tree.id),
-                         stepCon("sethigh", tree.id)
+                         stepCon("sethigh", tempLeaf.id),
+                         stepCon("variablevalue", getValueString(tempLeaf))
                      ]);
             seq.push([
-                         stepCon("codeline", "ins_newElemAssign"),
-                         stepCon("movetohome", tree.id)
+                         stepCon("codeline", "ins_whileTrue"),
                      ]);
             seq.push([
-                         stepCon("codeline", "ins_elemValAssign")
+                         stepCon("codeline", "ins_ifTreeNull"),
                      ]);
-        } else {
-            seq.push([
-                         stepCon("codeline", "ins_ifKeyMore"),
-                         stepCon("sethigh", tree.id)
-                     ]);
-            if (tree.key > key) {
-                seq.push([
-                             stepCon("codeline", "ins_ifLeft"),
-                             stepCon("sethighleft", tree.id)
-                         ]);
-                tree.left = f(tree.left, tree);
-            }
-            else {
-                seq.push([
-                             stepCon("codeline", "ins_ifKeyMoreElse")
-                         ]);
-                seq.push([
-                             stepCon("codeline", "ins_ifRight"),
-                             stepCon("sethighright", tree.id)
-                         ]);
-                tree.right = f(tree.right, tree);
+            if(tempLeaf.key > key) {
+                if(tempLeaf.left == null) {
+                    seq.push([
+                                 stepCon("codeline", "ins_ifValueMore"),
+                             ]);
+                    seq.push([
+                                 stepCon("codeline", "ins_ifLeft"),
+                                 stepCon("unhigh", 0),
+                                 stepCon("variablevalue", getValueString(null))
+                             ]);
+                    tempLeaf.left = newLeaf(tempLeaf, key, null, null, null);
+                    tempLeaf = tempLeaf.left;
+                    seq.push([
+                                 stepCon("codeline", "ins_whileTrue"),
+                             ]);
+                    seq.push([
+                                 stepCon("codeline", "ins_ifTreeNull"),
+                             ]);
+                    seq.push([
+                                 stepCon("codeline", "ins_newElem"),
+                                 stepCon("shownode", tempLeaf.id),
+                                 stepCon("sethigh", tempLeaf.id),
+                                 stepCon("movetohome", tempLeaf.id),
+                                 stepCon("variablevalue", getValueString(tempLeaf))
+                             ]);
+                    seq.push([
+                                 stepCon("codeline", "ins_newElemSetLeftNull"),
+                                 stepCon("codeline", "ins_newElemSetRightNull"),
+                                 stepCon("codeline", "ins_newElemSetVal")
+                             ]);
+                    seq.push([
+                                 stepCon("codeline", "ins_complite")
+                             ]);
+                    break;
+                } else {
+                    seq.push([
+                                 stepCon("codeline", "ins_ifValueMore"),
+                             ]);
+                    tempLeaf = tempLeaf.left;
+                    seq.push([
+                                 stepCon("codeline", "ins_ifLeft"),
+                                 stepCon("sethigh", tempLeaf.id),
+                                 stepCon("variablevalue", getValueString(tempLeaf))
+                             ]);
+                }
+            } else {
+                if(tempLeaf.right == null) {
+                    seq.push([
+                                 stepCon("codeline", "ins_ifValueMore"),
+                             ]);
+                    seq.push([
+                                 stepCon("codeline", "ins_ifRight"),
+                                 stepCon("unhigh", 0),
+                                 stepCon("variablevalue", getValueString(null))
+                             ]);
+                    seq.push([stepCon("unhigh", 0)]);
+                    tempLeaf.right = newLeaf(tempLeaf, key, null, null, null);
+                    tempLeaf = tempLeaf.right;
+                    seq.push([
+                                 stepCon("codeline", "ins_whileTrue"),
+                             ]);
+                    seq.push([
+                                 stepCon("codeline", "ins_ifTreeNull"),
+                             ]);
+                    seq.push([
+                                 stepCon("codeline", "ins_newElem"),
+                                 stepCon("shownode", tempLeaf.id),
+                                 stepCon("sethigh", tempLeaf.id),
+                                 stepCon("movetohome", tempLeaf.id),
+                                 stepCon("variablevalue", getValueString(tempLeaf))
+                             ]);
+                    seq.push([
+                                 stepCon("codeline", "ins_newElemSetLeftNull"),
+                                 stepCon("codeline", "ins_newElemSetRightNull"),
+                                 stepCon("codeline", "ins_newElemSetVal")
+                             ]);
+                    seq.push([
+                                 stepCon("codeline", "ins_complite")
+                             ]);
+                    break;
+                } else {
+                    seq.push([
+                                 stepCon("codeline", "ins_ifValueMore"),
+                             ]);
+                    seq.push([
+                                 stepCon("codeline", "ins_ifValueMoreElse")
+                             ]);
+                    tempLeaf = tempLeaf.right;
+                    seq.push([
+                                 stepCon("codeline", "ins_ifRight"),
+                                 stepCon("sethigh", tempLeaf.id),
+                                 stepCon("variablevalue", getValueString(tempLeaf))
+                             ]);
+                }
             }
         }
-//        seq.push([
-//                     stepCon("sethigh", tree.id),
-//                     stepCon("codeline", "ins_ifEnd")
-//                 ]);
-//        seq.push([
-//                     stepCon("sethigh", tree.id),
-//                     stepCon("codeline", "ins_funend")
-//                 ]);
-        return tree;
     }
-
-    treeRoot = f(treeRoot, null);
-
     // turn off lights
     seq.push([stepCon("unhigh", 0)]);
 
@@ -102,78 +190,100 @@ function insTree(key) {
     gSeq = seq.reverse();
 }
 
-
 function findTree(key) {
     var seq = [];
 
-    var f = function (tree) {
+    if(treeRoot == null) {
         seq.push([
-                     stepCon("codeline", "find_ifTreeNull"),
+                     stepCon("codeline", "find_whileTreeNotNull"),
+                     stepCon("variablevalue", getValueString(treeRoot))
                  ]);
-        if (tree == null) {
-            seq.push([
-                         stepCon("codeline", "find_TreeNull"),
-                     ]);
-        } else {
-            seq.push([
-                         stepCon("codeline", "find_ifTreeNullElse"),
-                         stepCon("sethigh", tree.id)
-                     ]);
-
-
-            if (tree.key > key) {
+        seq.push([
+                     stepCon("codeline", "find_TreeNull"),
+                 ]);
+    } else {
+        var tempLeaf = treeRoot;
+        while(true) {
+            if(tempLeaf != null) {
                 seq.push([
-                             stepCon("codeline", "find_Left"),
-                             stepCon("sethighleft", tree.id)
+                             stepCon("sethigh", tempLeaf.id),
+                             stepCon("variablevalue", getValueString(tempLeaf))
                          ]);
-                f(tree.left);
             } else {
                 seq.push([
-                             stepCon("codeline", "find_ifLeftElse"),
+                             stepCon("unhigh", 0),
+                             stepCon("variablevalue", getValueString(tempLeaf))
                          ]);
-                if (tree.key < key) {
-                    seq.push([
-                                 stepCon("codeline", "find_Right"),
-                                 stepCon("sethighright", tree.id)
-                             ]);
-                    f(tree.right);
-                } else {
-                    seq.push([
-                                 stepCon("codeline", "find_ifRightElse"),
-                             ]);
-                    seq.push([
-                                 stepCon("codeline", "find_finded"),
-                             ]);
-                }
-                //Бесполезная проверка
-                //Нужна т.к. тут алгоритм рекурсивный
-                //А в тз и интерфейсе - итеративный
-                //Я спокоен и не матерюсь.
-                if (tree.key == key) {
-                    seq.push([
-                                 stepCon("codeline", "find_uselessCheck"),
-                             ]);
-                }
             }
-//            seq.push([
-//                         stepCon("sethigh", tree.id),
-//                         stepCon("codeline", "find_ifEnd")
-//                     ]);
-//            seq.push([
-//                         stepCon("sethigh", tree.id),
-//                         stepCon("codeline", "find_funend")
-//                     ]);
+
+            seq.push([
+                         stepCon("codeline", "find_whileTreeNotNull"),
+                     ]);
+
+            if(tempLeaf != null) {
+                seq.push([
+                             stepCon("codeline", "find_ifValueEqual")
+                         ]);
+                if(tempLeaf.key == key) {
+                    seq.push([
+                                 stepCon("codeline", "find_finded")
+                             ]);
+                    seq.push([
+                                 stepCon("codeline", "find_complite")
+                             ]);
+                    break;
+                }
+
+                seq.push([
+                             stepCon("codeline", "find_ifTreeNullElse"),
+                             stepCon("codeline", "find_ifValueMore")
+                         ]);
+
+                if(tempLeaf.key > key) {
+                    tempLeaf = tempLeaf.left;
+                    if(tempLeaf != null) {
+                        seq.push([
+                                     stepCon("codeline", "find_ifLeft"),
+                                     stepCon("sethigh", tempLeaf.id),
+                                     stepCon("variablevalue", getValueString(tempLeaf))
+                                 ]);
+                    } else {
+                        seq.push([
+                                     stepCon("codeline", "find_ifLeft"),
+                                     stepCon("variablevalue", getValueString(tempLeaf))
+                                 ]);
+                    }
+                } else {
+                    tempLeaf = tempLeaf.right;
+                    if(tempLeaf != null) {
+                        seq.push([
+                                     stepCon("codeline", "find_ifRight"),
+                                     stepCon("sethigh", tempLeaf.id),
+                                     stepCon("variablevalue", getValueString(tempLeaf))
+                                 ]);
+                    } else {
+                        seq.push([
+                                     stepCon("codeline", "find_ifRight"),
+                                     stepCon("variablevalue", getValueString(tempLeaf))
+                                 ]);
+                    }
+                }
+            } else {
+                seq.push([
+                             stepCon("codeline", "find_TreeNull"),
+                             stepCon("variablevalue", getValueString(tempLeaf))
+                         ]);
+                break;
+            }
         }
     }
 
-    // build seq
-    f(treeRoot);
-
-    // turn off lights
+  // turn off lights
     seq.push([stepCon("unhigh", 0)]);
 
     gSeq = seq.reverse();
 }
+
 function getTree() {
     return treeRoot;
 }

@@ -42,63 +42,13 @@ Rectangle {
     function viewTree() {
         M.showElems(treeVis);
         M.showArrows(treeVis);
-        M.rebuildTree(treeVis);
         //Костыль
+        M.rebuildTree(treeVis);
     }
 
     function clearTree() {
         M.clearTree();
     }
-
-    //Костыли
-    //Может сбоить при изменении потомков или их порядка у объектов window и codeContainer
-    //Блин, всё летает очень быстро
-    //Но вроде бы правильно
-    //По-моему выглядит забавно :D
-    function findLinesSwitcher(str) {
-        switch (str) {
-        case "find_ifTreeNull" : window.children[3].children[1].strId = 1;
-            break;
-        case "find_TreeNull" : window.children[3].children[1].strId = 13;
-            break;
-        case "find_ifTreeNullElse" : window.children[3].children[1].strId = 8;
-            break;
-        case "find_Left" : window.children[3].children[1].strId = 9;
-            break;
-        case "find_ifLeftElse" : window.children[3].children[1].strId = 0;
-            break;
-        case "find_Right" : window.children[3].children[1].strId = 11;
-            break;
-        case "find_ifRightElse" : window.children[3].children[1].strId = 5;
-            break;
-        case "find_finded" : window.children[3].children[1].strId = 6;
-            break;
-        case "find_uselessCheck" : //window.children[3].children[1].strId = 3;
-            break;
-        }
-    }
-
-    function addLinesSwitcher(str) {
-        switch (str) {
-        case "ins_useless" : window.children[3].children[1].strId = 1;
-            break;
-        case "ins_ifTreeNull" : window.children[3].children[1].strId = 3;
-            break;
-        case "ins_newElem" : window.children[3].children[1].strId = 5;
-            break;
-        case "ins_elemValAssign" : window.children[3].children[1].strId = 9;
-            break;
-        case "ins_ifKeyMore" : window.children[3].children[1].strId = 12;
-            break;
-        case "ins_ifLeft" : window.children[3].children[1].strId = 13;
-            break;
-        case "ins_ifRight" : window.children[3].children[1].strId = 15;
-            break;
-        case "ins_newElemAssign" : window.children[3].children[1].strId = 6;
-            break;
-        }
-    }
-
 
     Timer {
         id: animationTimer
@@ -120,12 +70,11 @@ Rectangle {
                 var v = step[i].value;
 
                 if(n == "codeline") {
-                    if(v[0] == 'f') {
-                        findLinesSwitcher(v);
-                    } else {
-                        addLinesSwitcher(v);
-                    }
+                    code.selectLineByKey(v);
+                }
 
+                if(n == "variablevalue") {
+                    variable.setValue(v);
                 }
 
                 if(n == "codeline" && v == "find_finded") {

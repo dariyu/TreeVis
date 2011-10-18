@@ -7,14 +7,22 @@ Rectangle {
     width: 180
     height: 200
     radius: 10
-    anchors.margins: 5
 
     //Переменная для смены "кода" в окошке "кода"
     property int sId: 1
 
     property int strId: 0
 
-  ListView {
+    ListView {
+        id: codeList
+        anchors.fill: parent
+        anchors.margins: 5
+        highlightFollowsCurrentItem : true
+
+        delegate: codeDelegate
+        highlight: Rectangle { color: "lightsteelblue"; radius: 5; opacity: 1 }
+        focus: true
+
         //Модель пустого листа
         ListModel {id: emptyListModel}
 
@@ -26,7 +34,7 @@ Rectangle {
                 line: "p := root;"
             }
             ListElement {
-                //ins_useless
+                key: "ins_whileTrue"
                 line: "while (true) do "
             }
             ListElement {
@@ -34,7 +42,7 @@ Rectangle {
                 line: "begin"
             }
             ListElement {
-                //ins_ifTreeNull
+                key: "ins_ifTreeNull"
                 line: "    if (p = nil) then "
             }
             ListElement {
@@ -42,22 +50,25 @@ Rectangle {
                 line: "    begin"
             }
             ListElement {
-                // ins_newElem
+                key: "ins_newElem"
                 line: "        new(p);"
             }
             ListElement {
-                //6 ins_newElemAssign
-                line: "        p^.left := nil;"
-            }
-            ListElement {
-                line: "        p^.right := nil;"
-            }
-            ListElement {
-                //8
+                //6
+                key: "ins_newElemSetVal"
                 line: "        p^.val := newValue;"
             }
             ListElement {
-                //ins_elemValAssign
+                key: "ins_newElemSetLeftNull"
+                line: "        p^.left := nil;"
+            }
+            ListElement {
+                //8
+                key: "ins_newElemSetRightNull"
+                line: "        p^.right := nil;"
+            }
+            ListElement {
+                key: "ins_complite"
                 line: "        exit;"
             }
             ListElement {
@@ -68,11 +79,12 @@ Rectangle {
                 line: "    else"
             }
             ListElement {
-                //12 ins_ifKeyMore
+                //12
+                key: "ins_ifValueMore"
                 line: "        if (newValue < p^.val) then"
             }
             ListElement {
-                //ins_ifLeft
+                key: "ins_ifLeft"
                 line: "            p := p^.left;"
             }
             ListElement {
@@ -80,7 +92,7 @@ Rectangle {
                 line: "        else "
             }
             ListElement {
-                //ins_ifRight
+                key: "ins_ifRight"
                 line: "            p := p^.right;"
             }
             ListElement {
@@ -96,82 +108,70 @@ Rectangle {
                 line: "p := root;"
             }
             ListElement {
-                //property string strId: "find_ifTreeNull"
+                key: "find_whileTreeNotNull"
                 line: "while (p <> nil) do"
             }
             ListElement {
                 line: "begin"
             }
             ListElement {
-                //property string strId: "find_uselessCheck"
+                key: "find_ifValueEqual"
                 line: "    if (findValue = p^.val) then"
             }
             ListElement {
                 line: "    begin"
             }
             ListElement {
-                //property string strId: "find_ifRightElse"
+                key: "find_finded"
                 line: "        find := true;"
             }
             ListElement {
-                //property string strId: "find_finded"
+                key: "find_complite"
                 line: "        exit;"
             }
             ListElement {
                 line: "    end;"
             }
             ListElement {
-                //property string strId: "find_ifTreeNullElse"
+                key: "find_ifValueMore"
                 line: "    if (findValue < p^.val) then"
             }
             ListElement {
-                //property string strId: "find_Left"
+                key: "find_ifLeft"
                 line: "        p := p^.left"
             }
             ListElement {
                 line: "    else"
             }
             ListElement {
-                //11property string strId: "find_Right"
+                key: "find_ifRight"
                 line: "        p := p^.right;"
             }
             ListElement {
-                line: "    end;"
+                line: "end;"
             }
             ListElement {
-                //13property string strId: "find_TreeNull"
+                key: "find_TreeNull"
                 line: "find := false;"
             }
         }
-        //Норм кирпичей заготовил.
 
         //Делегат отображения элементов листа
         Component {
             id: codeDelegate
             Item {
-                width: 190
+                width: codeList.width
                 height: 16
                 Text { text: line }
             }
         }
-
-        id: codeList
-        anchors.fill: parent
-        anchors.leftMargin: 5
-        anchors.topMargin: 5
-        highlightFollowsCurrentItem : true
-
-        delegate: codeDelegate
-        //Подсветка
-        highlight: Rectangle { color: "lightsteelblue"; radius: 5; opacity: 1 }
-        focus: true
     }
 
 
     //свич "кода" в окошке "кода"
     onSIdChanged: {
         if (sId == 1) {
-            codeList.model = emptyListModel;
+            codeList.model = emptyListModel;            
         }
         if (sId == 2) {
             codeList.model = addListModel;
@@ -179,16 +179,20 @@ Rectangle {
         if (sId == 3) {
             codeList.model = findListModel;
         }
-        //Всё это не очень хорошо, но работает
+        codeList.currentIndex = 0;
     }
 
     onStrIdChanged: {
         codeList.currentIndex = strId;
-        //Это ВРОДЕ БЫ работает правильно,
-        //Насколько оно вообще может работать правильно
-        //Т к алгоритмы в окошке продукта и в treeMachinery.js разные
-        //Но очень смешно выглядит в деле
-        //Надо анимацию поковырять или чтото такое
+    }
+
+    function selectLineByKey(key) {
+        for(var i = 0; i < codeList.model.count; i++) {
+            if(codeList.model.get(i).key == key) {
+                codeList.currentIndex = i;
+                return;
+            }
+        }
     }
 }
 

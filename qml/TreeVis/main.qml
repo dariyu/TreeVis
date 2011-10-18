@@ -3,7 +3,7 @@ import "Core"
 
 Rectangle {
     width: 640
-    height: 480
+    height: 600
 
     id: window
 
@@ -65,11 +65,12 @@ Rectangle {
                 opacity: 1
 
                 onClicked: {
-                    code.sId = 2;
-                    code.strId = 0;
                     if(treeContainer.isAnimationLaunch()) {
                         return;
                     }
+                    code.sId = 2;
+                    code.strId = 0;
+                    variable.setValue(";;;;");
 
                     var str = value.text;
                     if(str.length <= 0) {
@@ -101,11 +102,12 @@ Rectangle {
                 keyUsing: true;
                 opacity: 1
                 onClicked: {
-                    code.sId = 3;
-                    code.strId = 0;
                     if(treeContainer.isAnimationLaunch()) {
                         return;
                     }
+                    code.sId = 3;
+                    code.strId = 0;
+                    variable.setValue(";;;;");
 
                     var str = value.text;
                     if(str.length <= 0) {
@@ -141,11 +143,11 @@ Rectangle {
                 opacity: 1
 
                 onClicked: {
-                    code.sId = 1;
                     if(treeContainer.isAnimationLaunch()) {
                         return;
                     }
-
+                    code.sId = 1;
+                    variable.setValue(";;;;");
                     treeContainer.clearTree();
                 }
             }
@@ -158,7 +160,7 @@ Rectangle {
         color: "#00000000"
         opacity: 1
         anchors.top: inputElementsContainer.bottom
-        anchors.topMargin: 4
+        anchors.topMargin: 8
         anchors.bottom: window.bottom
         anchors.bottomMargin: 10
 
@@ -179,13 +181,31 @@ Rectangle {
             focus: true
 
             anchors.top: txtCode.bottom
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.bottom: txtVariable.top
             anchors.topMargin: 4
+            anchors.bottomMargin: 8
+        }
+
+        Text {
+            id: txtVariable
+            anchors.left: parent.left
+            anchors.bottom: variable.top
+            anchors.bottomMargin: 4
+
+            text: "Значение переменной:"
+            font.pixelSize: 16; font.bold: true; color: "white"; style: Text.Raised; styleColor: "black"
+            horizontalAlignment: Qt.AlignRight
+        }
+
+        VariableValueView {
+            id: variable
+            height: 75
+
             anchors.left: parent.left
             anchors.right: parent.right
             anchors.bottom: parent.bottom
-
-            opacity: 0.7
-
         }
     }
 }
