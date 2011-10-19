@@ -50,6 +50,8 @@ FocusScope {
     property alias text: input.text
     property alias item: input
     property alias font: input.font
+    property alias color: input.color
+
     TextInput{
         id: input
         width: parent.width - 12
@@ -57,7 +59,8 @@ FocusScope {
         maximumLength:21
         font.pixelSize: 16;
         font.bold: true
-        color: "#151515"; selectionColor: "mediumseagreen"
+        color: "#151515";
+        selectionColor: "mediumseagreen"
         focus: true
         onAccepted:{container.accepted()}
         text: ""

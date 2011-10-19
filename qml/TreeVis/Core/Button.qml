@@ -46,45 +46,93 @@ Item {
 
     signal clicked
 
+    property bool enabled: true
     property string text
     property bool keyUsing: false
 
     BorderImage {
-        id: buttonImage
-        source: "images/toolbutton.sci"
+        id: popImage
+        source: "images/toolbutton_pop.sci"
         width: container.width; height: container.height
     }
     BorderImage {
-        id: pressed
+        id: pushImage
         opacity: 0
-        source: "images/toolbutton.sci"
+        source: "images/toolbutton_push.sci"
+        width: container.width; height: container.height
+    }
+    BorderImage {
+        id: disabledImage
+        opacity: 0
+        source: "images/toolbutton_disabled.sci"
         width: container.width; height: container.height
     }
     MouseArea {
         id: mouseRegion
-        anchors.fill: buttonImage
-        onClicked: { container.clicked(); }
+        anchors.fill: popImage
+        onClicked: {
+            if(container.enabled) {
+                container.clicked();
+            }
+        }
     }
     Text {
         id: btnText
         color: if(container.keyUsing){"#D0D0D0";} else {"#FFFFFF";}
-        anchors.centerIn: buttonImage; font.bold: true
+        anchors.centerIn: popImage; font.bold: true
         text: container.text; style: Text.Raised; styleColor: "black"
         font.pixelSize: 12
     }
     states: [
         State {
             name: "Pressed"
-            when: mouseRegion.pressed == true
-            PropertyChanges { target: pressed; opacity: 0.5 }
+            when: ((enabled == true) && (mouseRegion.pressed == true))
+            PropertyChanges {
+                target: pushImage
+                opacity: 1
+            }
+            PropertyChanges {
+                target: popImage;
+                opacity: 0
+            }
+            PropertyChanges {
+                target: disabledImage;
+                opacity: 0
+            }
         },
         State {
             name: "Focused"
             when: container.activeFocus == true
-            PropertyChanges { target: btnText; color: "#FFFFFF" }
+            PropertyChanges {
+                target: btnText;
+                color: "#FFFFFF"
+            }
+        },
+        State {
+            name: "Disabled"
+            when: enabled == false
+            PropertyChanges {
+                target: pushImage
+                opacity: 0
+            }
+            PropertyChanges {
+                target: popImage;
+                opacity: 0
+            }
+            PropertyChanges {
+                target: disabledImage;
+                opacity: 1
+            }
+            PropertyChanges {
+                target: btnText;
+                color: "#C0C0C0"
+            }
         }
+
     ]
     transitions: Transition {
-        ColorAnimation { target: btnText; }
+        ColorAnimation {
+            target: btnText;
+        }
     }
 }
