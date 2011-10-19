@@ -18,6 +18,8 @@ Rectangle {
         anchors.fill: parent
         anchors.margins: 5
         highlightFollowsCurrentItem : true
+        highlightMoveDuration: -1
+        highlightMoveSpeed: 450
 
         delegate: codeDelegate
         highlight: Rectangle { color: "lightsteelblue"; radius: 5; opacity: 1 }
@@ -170,6 +172,7 @@ Rectangle {
 
     //свич "кода" в окошке "кода"
     onSIdChanged: {
+        codeList.highlightFollowsCurrentItem = false;
         if (sId == 1) {
             codeList.model = emptyListModel;            
         }
@@ -180,6 +183,7 @@ Rectangle {
             codeList.model = findListModel;
         }
         codeList.currentIndex = 0;
+        codeList.highlightFollowsCurrentItem = true;
     }
 
     onStrIdChanged: {

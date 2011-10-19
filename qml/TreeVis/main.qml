@@ -68,18 +68,18 @@ Rectangle {
                     if(treeContainer.isAnimationLaunch()) {
                         return;
                     }
-                    code.sId = 2;
-                    code.strId = 0;
-                    variable.setValue(";;;;");
 
                     var str = value.text;
                     if(str.length <= 0) {
                         return;
                     }
 
-                    var numbers = "-0123456789";
+                    var numbers = "0123456789";
+                    if(numbers.indexOf(str[0]) == -1 && str[0] != "-" || str[0] == "-" && str.length == 1) {
+                        return;
+                    }
 
-                    for(var i = 0; i < str.length; i++) {
+                    for(var i = 1; i < str.length; i++) {
                         if(numbers.indexOf(str[i]) == -1) {
                             return;
                         }
@@ -89,6 +89,8 @@ Rectangle {
                     if(insertVal > 128 || insertVal < -127) {
                         return;
                     } else {
+                        code.sId = 2;
+                        variable.setValue(";;;;");
                         inputElementsContainer.opacity = 0.5;
                         treeContainer.addElement(insertVal);
                     }
@@ -105,18 +107,18 @@ Rectangle {
                     if(treeContainer.isAnimationLaunch()) {
                         return;
                     }
-                    code.sId = 3;
-                    code.strId = 0;
-                    variable.setValue(";;;;");
 
                     var str = value.text;
                     if(str.length <= 0) {
                         return;
                     }
 
-                    var numbers = "-0123456789";
+                    var numbers = "0123456789";
+                    if(numbers.indexOf(str[0]) == -1 && str[0] != "-") {
+                        return;
+                    }
 
-                    for(var i = 0; i < str.length; i++) {
+                    for(var i = 1; i < str.length; i++) {
                         if(numbers.indexOf(str[i]) == -1) {
                             return;
                         }
@@ -126,6 +128,8 @@ Rectangle {
                     if(findVal > 128 || findVal < -127) {
                         return;
                     } else {
+                        code.sId = 3;
+                        variable.setValue(";;;;");
                         inputElementsContainer.opacity = 0.5;
                         treeContainer.findElement(findVal);
                     }
