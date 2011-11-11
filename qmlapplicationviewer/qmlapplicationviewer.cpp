@@ -31,10 +31,8 @@
 #endif
 
 // Enable debugging before any QDeclarativeEngine is created
-struct QmlJsDebuggingEnabler
-{
-    QmlJsDebuggingEnabler()
-    {
+struct QmlJsDebuggingEnabler {
+    QmlJsDebuggingEnabler() {
         QDeclarativeDebugHelper::enableDebugging();
     }
 };
@@ -44,15 +42,13 @@ static QmlJsDebuggingEnabler enableDebuggingHelper;
 
 #endif // QMLJSDEBUGGER
 
-class QmlApplicationViewerPrivate
-{
+class QmlApplicationViewerPrivate {
     QString mainQmlFile;
     friend class QmlApplicationViewer;
     static QString adjustPath(const QString &path);
 };
 
-QString QmlApplicationViewerPrivate::adjustPath(const QString &path)
-{
+QString QmlApplicationViewerPrivate::adjustPath(const QString &path) {
 #ifdef Q_OS_UNIX
 #ifdef Q_OS_MAC
     if (!QDir::isAbsolutePath(path))
@@ -73,8 +69,7 @@ QString QmlApplicationViewerPrivate::adjustPath(const QString &path)
 
 QmlApplicationViewer::QmlApplicationViewer(QWidget *parent) :
     QDeclarativeView(parent),
-    m_d(new QmlApplicationViewerPrivate)
-{
+    m_d(new QmlApplicationViewerPrivate) {
     connect(engine(), SIGNAL(quit()), SLOT(close()));
     setResizeMode(QDeclarativeView::SizeRootObjectToView);
     // Qt versions prior to 4.8.0 don't have QML/JS debugging services built in
@@ -86,26 +81,23 @@ QmlApplicationViewer::QmlApplicationViewer(QWidget *parent) :
     new QmlJSDebugger::QDeclarativeViewObserver(this, this);
 #endif
 #endif
+    rootContext()->setContextProperty("windowContext", this);
 }
 
-QmlApplicationViewer::~QmlApplicationViewer()
-{
+QmlApplicationViewer::~QmlApplicationViewer() {
     delete m_d;
 }
 
-void QmlApplicationViewer::setMainQmlFile(const QString &file)
-{
+void QmlApplicationViewer::setMainQmlFile(const QString &file) {
     m_d->mainQmlFile = QmlApplicationViewerPrivate::adjustPath(file);
     setSource(QUrl::fromLocalFile(m_d->mainQmlFile));
 }
 
-void QmlApplicationViewer::addImportPath(const QString &path)
-{
+void QmlApplicationViewer::addImportPath(const QString &path) {
     engine()->addImportPath(QmlApplicationViewerPrivate::adjustPath(path));
 }
 
-void QmlApplicationViewer::setOrientation(ScreenOrientation orientation)
-{
+void QmlApplicationViewer::setOrientation(ScreenOrientation orientation) {
 #if defined(Q_OS_SYMBIAN)
     // If the version of Qt on the device is < 4.7.2, that attribute won't work
     if (orientation != ScreenOrientationAuto) {
@@ -147,8 +139,7 @@ void QmlApplicationViewer::setOrientation(ScreenOrientation orientation)
     setAttribute(attribute, true);
 }
 
-void QmlApplicationViewer::showExpanded()
-{
+void QmlApplicationViewer::showExpanded() {
 #if defined(Q_OS_SYMBIAN) || defined(MEEGO_EDITION_HARMATTAN) || defined(Q_WS_SIMULATOR)
     showFullScreen();
 #elif defined(Q_WS_MAEMO_5)
@@ -156,4 +147,16 @@ void QmlApplicationViewer::showExpanded()
 #else
     show();
 #endif
+}
+
+void QmlApplicationViewer::openHelpCode() {
+    QDesktopServices::openUrl(QUrl::fromLocalFile(QDir::currentPath() + "\\Help\\Code.rtf"));
+}
+
+void QmlApplicationViewer::openHelpTheory() {
+    QDesktopServices::openUrl(QUrl::fromLocalFile(QDir::currentPath() + "\\Help\\Theory.rtf"));
+}
+
+void QmlApplicationViewer::openHelpUserGuide() {
+    QDesktopServices::openUrl(QUrl::fromLocalFile(QDir::currentPath() + "\\Help\\UserGuide.rtf"));
 }

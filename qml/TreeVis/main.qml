@@ -215,7 +215,86 @@ Rectangle {
                 height: 280
 
             }
-        }// Column codeViewContainer
+        }// Column codeViewContainer      
+    }
+
+    Image {
+        id: imgHelp
+        source: "help.png"
+        smooth: true
+        width: 20
+        height: 20
+
+        anchors.right: parent.right
+        anchors.top: parent.top
+
+        anchors.rightMargin: 5
+        anchors.topMargin: 5
+
+        MouseArea {
+            anchors.fill: parent
+            onClicked: {
+                rectHelp.visible = !rectHelp.visible;
+            }
+        }
+    }
+
+    Rectangle {
+        id: rectHelp
+        visible: false
+        color: "black"
+        width: 105
+        height: 62
+        radius: 5
+        clip: true
+
+        anchors.right: parent.right
+        anchors.top: parent.top
+        anchors.topMargin: 27
+        anchors.rightMargin: 5
+
+        Button {
+            id: butHelpTheory
+            text: "Теория"
+            height: 20
+            keyUsing: true
+            anchors.top: rectHelp.top
+            anchors.left: rectHelp.left
+            anchors.right: rectHelp.right
+            anchors.topMargin: 1
+
+            onClicked: {
+                windowContext.openHelpTheory();
+            }
+        }
+
+        Button {
+            id: butHelpUserGuide
+            text: "Руководство"
+            height: 20
+            keyUsing: true
+            anchors.top: butHelpTheory.bottom
+            anchors.left: rectHelp.left
+            anchors.right: rectHelp.right
+
+            onClicked: {
+                windowContext.openHelpUserGuide();
+            }
+        }
+
+        Button {
+            id: butHelpCode
+            text: "Исходный код"
+            height: 20
+            keyUsing: true
+            anchors.top: butHelpUserGuide.bottom
+            anchors.left: rectHelp.left
+            anchors.right: rectHelp.right
+
+            onClicked: {
+                windowContext.openHelpCode();
+            }
+        }
     }
 
     function setButtonsEnabledValue(enabled) {
