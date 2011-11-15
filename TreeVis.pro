@@ -2,7 +2,7 @@
 folder_01.source = qml/TreeVis
 folder_01.target = qml
 DEPLOYMENTFOLDERS = folder_01
-
+RC_FILE = treevis.rc
 # Additional import path used to resolve QML modules in Creator's code model
 QML_IMPORT_PATH =
 
@@ -47,7 +47,9 @@ OTHER_FILES += \
     qml/Core/images/gloss.png \
     qml/Core/qmldir \
     doSequence.markdown \
-    СписокКостылей.txt
+    СписокКостылей.txt \
+    treevis.rc
+
 
 
 

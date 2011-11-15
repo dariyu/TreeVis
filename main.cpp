@@ -1,4 +1,5 @@
 #include <QtGui/QApplication>
+#include <QIcon>
 #include "qmlapplicationviewer.h"
 //(c) mafia
 
@@ -9,6 +10,7 @@ int main(int argc, char *argv[]) {
     viewer.setMinimumHeight(550);
     viewer.setMinimumWidth(500);
     viewer.setOrientation(QmlApplicationViewer::ScreenOrientationAuto);
+
 
 #ifdef QT_DEBUG
     viewer.setMainQmlFile(QLatin1String("qml/TreeVis/main.qml"));
