@@ -86,6 +86,7 @@ Rectangle {
                     opacity: 1
 
                     onClicked: {
+                        alert.forceClose();
                         var str = value.text;
                         if(str.length <= 0) {
                             return;
@@ -93,17 +94,20 @@ Rectangle {
 
                         var numbers = "0123456789";
                         if(numbers.indexOf(str[0]) == -1 && str[0] != "-" || str[0] == "-" && str.length == 1) {
+                            alert.show("Это не число");
                             return;
                         }
 
                         for(var i = 1; i < str.length; i++) {
                             if(numbers.indexOf(str[i]) == -1) {
+                                alert.show("Это не число");
                                 return;
                             }
                         }
 
                         var insertVal = parseInt(str);
                         if(insertVal > 128 || insertVal < -127) {
+                            alert.show("Значение должно быть в диапазоне [-127, 128]");
                             return;
                         } else {
                             code.sId = 2;
@@ -122,6 +126,7 @@ Rectangle {
                     keyUsing: true;
                     opacity: 1
                     onClicked: {
+                        alert.forceClose();
                         var str = value.text;
                         if(str.length <= 0) {
                             return;
@@ -129,17 +134,20 @@ Rectangle {
 
                         var numbers = "0123456789";
                         if(numbers.indexOf(str[0]) == -1 && str[0] != "-") {
+                            alert.show("Это не число");
                             return;
                         }
 
                         for(var i = 1; i < str.length; i++) {
                             if(numbers.indexOf(str[i]) == -1) {
+                                alert.show("Это не число");
                                 return;
                             }
                         }
 
                         var findVal = parseInt(str);
                         if(findVal > 128 || findVal < -127) {
+                            alert.show("Значение должно быть в диапазоне [-127, 128]");
                             return;
                         } else {
                             code.sId = 3;
@@ -162,9 +170,11 @@ Rectangle {
                     opacity: 1
 
                     onClicked: {
+                        alert.forceClose();
                         code.sId = 1;
                         variable.setValue(";;;;");
                         treeContainer.clearTree();
+                        value.text = "";
                     }
                 }
             }// Row
@@ -296,6 +306,26 @@ Rectangle {
             }
         }
     }
+
+    Dialog {
+        id: alert
+        anchors.right: parent.right
+        anchors.top: parent.top
+        anchors.margins: 5
+
+        onOpened: closeTimer.start()
+        onClosed: closeTimer.stop()
+
+        Timer {
+            id: closeTimer
+            interval: 10000
+            running: false
+            onTriggered: {
+                alert.forceClose();
+            }
+        }
+    }
+
 
     function setButtonsEnabledValue(enabled) {
         butClear.enabled = enabled;
