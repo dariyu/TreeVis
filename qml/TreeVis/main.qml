@@ -91,29 +91,17 @@ Rectangle {
                         if(str.length <= 0) {
                             return;
                         }
-
-                        var numbers = "0123456789";
-                        if(numbers.indexOf(str[0]) == -1 && str[0] != "-" || str[0] == "-" && str.length == 1) {
-                            alert.show("Это не число");
-                            return;
-                        }
-
-                        for(var i = 1; i < str.length; i++) {
-                            if(numbers.indexOf(str[i]) == -1) {
-                                alert.show("Это не число");
-                                return;
-                            }
-                        }
-
-                        var insertVal = parseInt(str);
-                        if(insertVal > 128 || insertVal < -127) {
-                            alert.show("Значение должно быть в диапазоне [-127, 128]");
-                            return;
-                        } else {
+                        var obj = getValidNumber(str);
+                        if(obj.message !== undefined) {
+                            alert.show(obj.message);
+                        } else if(obj.value !== undefined) {
+                            value.text = obj.value;
                             code.sId = 2;
                             variable.setValue(";;;;");
                             setButtonsEnabledValue(false);
-                            treeContainer.addElement(insertVal);
+                            treeContainer.addElement(obj.value);
+                        } else {
+                            alert.show("Получено неопределяемое значение.");
                         }
                     }
                 }
@@ -125,35 +113,24 @@ Rectangle {
                     height: 25
                     keyUsing: true;
                     opacity: 1
+
                     onClicked: {
                         alert.forceClose();
                         var str = value.text;
                         if(str.length <= 0) {
                             return;
                         }
-
-                        var numbers = "0123456789";
-                        if(numbers.indexOf(str[0]) == -1 && str[0] != "-") {
-                            alert.show("Это не число");
-                            return;
-                        }
-
-                        for(var i = 1; i < str.length; i++) {
-                            if(numbers.indexOf(str[i]) == -1) {
-                                alert.show("Это не число");
-                                return;
-                            }
-                        }
-
-                        var findVal = parseInt(str);
-                        if(findVal > 128 || findVal < -127) {
-                            alert.show("Значение должно быть в диапазоне [-127, 128]");
-                            return;
-                        } else {
+                        var obj = getValidNumber(str);
+                        if(obj.message !== undefined) {
+                            alert.show(obj.message);
+                        } else if(obj.value !== undefined) {
+                            value.text = obj.value;
                             code.sId = 3;
                             variable.setValue(";;;;");
                             setButtonsEnabledValue(false);
-                            treeContainer.findElement(findVal);
+                            treeContainer.findElement(obj.value);
+                        } else {
+                            alert.show("Получено неопределяемое значение.");
                         }
                     }
                 }
@@ -331,6 +308,39 @@ Rectangle {
         butClear.enabled = enabled;
         butFind.enabled = enabled;
         butIns.enabled = enabled;
+    }
+
+    // Если число целое и в диапазоне от [-127, 128] то вернет само число. в противном cлучае - false
+    function getValidNumber(str) {
+        var negative = false;
+        if(str[0] == '-') {
+            negative = true;
+            str = str.substring(1);
+        }
+
+        if(str.length == 0) {
+            //alert.show("Это не число.");
+            return {"message" : "Это не целое число."};
+        }
+
+        for(; (str.length > 0) && (str[0] == '0'); str = str.substring(1));
+
+        var numbers = "0123456789";
+        for(var i = 0; i < str.length; i++) {
+            if(numbers.indexOf(str[i]) == -1) {
+                //alert.show("Это не число");
+                return {"message" : "Это не целое число."};
+            }
+        }
+
+        var findVal = parseInt(str);
+        if(findVal > 128 || findVal < -127) {
+            //alert.show("Значение должно быть в диапазоне [-127, 128]");
+            return {"message" : "Значение должно быть в диапазоне [-127, 128]."};
+        } else {
+            //return (negative) ? -1 * findVal : findVal;
+            return { "value" : ((negative) ? -1 * findVal : findVal) };
+        }
     }
 }
 

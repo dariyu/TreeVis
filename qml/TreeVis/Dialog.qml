@@ -9,15 +9,15 @@ Rectangle {
     signal opened
     function forceClose() {
         if(page.opacity == 0)
-            return; //already closed
-        page.closed();
+            return;
         page.opacity = 0;
+        page.closed();
     }
 
     function show(txt) {
-        page.opened();
         dialogText.text = txt;
         page.opacity = 1;
+        page.opened();
     }
 
     width: dialogText.width + 20; height: dialogText.height + 20
@@ -26,7 +26,7 @@ Rectangle {
     opacity: 0
     visible: opacity > 0
     Behavior on opacity {
-        NumberAnimation { duration: 1000 }
+        NumberAnimation { duration: 150 }
     }
 
     Text { id: dialogText; anchors.centerIn: parent; text: "Hello World!" }
