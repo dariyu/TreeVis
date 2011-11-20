@@ -47,6 +47,8 @@ Rectangle {
         }
     }
 
+    // Парсим переменные для отображения
+    /// TODO Может таки переделать на массив?
     function setValue(val) {
         var strs = val.split(';');
         for(var i = 0; i < valueList.model.count; i++) {

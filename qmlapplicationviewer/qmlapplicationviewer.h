@@ -12,9 +12,9 @@
 #define QMLAPPLICATIONVIEWER_H
 
 #include <QtDeclarative/QDeclarativeView>
-#include <QDesktopServices>
 
-class QmlApplicationViewer : public QDeclarativeView {
+class QmlApplicationViewer : public QDeclarativeView
+{
     Q_OBJECT
 
 public:
@@ -35,9 +35,6 @@ public:
 
     void showExpanded();
 
-    Q_INVOKABLE void openHelpUserGuide();
-    Q_INVOKABLE void openHelpTheory();
-    Q_INVOKABLE void openHelpCode();
 private:
     class QmlApplicationViewerPrivate *m_d;
 };

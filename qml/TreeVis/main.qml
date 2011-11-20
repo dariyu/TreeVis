@@ -8,7 +8,10 @@ Rectangle {
     id: window
 
     color: "#343434";
-    Image { source: "Core/images/stripes.png"; fillMode: Image.Tile; anchors.fill: parent; opacity: 0.3 }
+    Image {
+        source: "Core/images/stripes.png"; fillMode: Image.Tile;
+        anchors.fill: parent; opacity: 0.3
+    }
 
     TreeVis {
         id: treeContainer
@@ -169,7 +172,8 @@ Rectangle {
                 anchors.right: parent.right
 
                 text: "Значение переменной:"
-                font.pixelSize: 16; font.bold: true; color: "white"; style: Text.Raised; styleColor: "black"
+                font.pixelSize: 16; font.bold: true; color: "white"
+                style: Text.Raised; styleColor: "black"
                 horizontalAlignment: Qt.AlignLeft
             }
 
@@ -202,7 +206,7 @@ Rectangle {
                 height: 280
 
             }
-        }// Column codeViewContainer      
+        }// Column codeViewContainer
     }
 
     Image {
@@ -310,7 +314,8 @@ Rectangle {
         butIns.enabled = enabled;
     }
 
-    // Если число целое и в диапазоне от [-127, 128] то вернет само число. в противном cлучае - false
+    // Если число целое и в диапазоне от [-128, 127],
+    // то вернет само число. в противном cлучае -- false
     function getValidNumber(str) {
         var negative = false;
         if(str[0] == '-') {
@@ -329,27 +334,16 @@ Rectangle {
         for(var i = 0; i < str.length; i++) {
             if(numbers.indexOf(str[i]) == -1) {
                 //alert.show("Это не число");
-                return {"message" : "Это не целое число."};
+                return {"message" : "Это не целое число"};
             }
         }
 
         var findVal = parseInt(str);
-        if(findVal > 128 || findVal < -127) {
-            //alert.show("Значение должно быть в диапазоне [-127, 128]");
-            return {"message" : "Значение должно быть в диапазоне [-127, 128]."};
-        } else {
-            //return (negative) ? -1 * findVal : findVal;
+        if(findVal > 127 || findVal < -128) {
+            return {"message" : "Значение должно быть в диапазоне [-128, 127]"};
+        } else {            
             return { "value" : ((negative) ? -1 * findVal : findVal) };
         }
     }
 }
 
-    /* Not now )
-    VDots {
-        anchors.verticalCenter: window.verticalCenter
-        anchors.left: treeContainer.right
-        anchors.leftMargin: 1
-
-        color: "white"
-
-    } */
